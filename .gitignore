@@ -1,0 +1,9 @@
+build/*
+*.log
+*.lock
+node_modules/*
+buildbot_macports_custom_views/*
+!/buildbot_macports_custom_views/__init__.py
+buildbot_macports_custom_views.egg-info/*
+.DS_Store
+.vscode/
