@@ -24,7 +24,12 @@
               "
               target="_blank"
             >
-              {{ build.number }}
+              <span
+                v-bind:class="setResultBadge(build)"
+                class="badge-status ng-binding"
+              >
+                {{ build.number }}
+              </span>
             </a>
           </td>
           <td v-if="build.started_at < rdate">
@@ -37,7 +42,16 @@
           <td v-if="build.started_at < rdate">
             {{ build.properties.portname }}
           </td>
-          <td v-if="build.started_at < rdate">{{ build.workerid }}</td>
+          <td v-if="build.started_at < rdate">
+            <a v-bind:href="'/#/workers/' + build.workerid" target="_blank">
+              <span
+                :class="setWorkerStatus(getWorkerDetails(build.workerid))"
+                class="badge-status ng-binding"
+              >
+                {{ getWorkerDetails(build.workerid).name }}
+              </span>
+            </a>
+          </td>
         </tr>
       </tbody>
       <tbody v-else>
@@ -49,7 +63,12 @@
               "
               target="_blank"
             >
-              {{ build.number }}
+              <span
+                v-bind:class="setResultBadge(build)"
+                class="badge-status ng-binding"
+              >
+                {{ build.number }}
+              </span>
             </a>
           </td>
           <td v-if="build.started_at > rdate">
@@ -62,7 +81,16 @@
           <td v-if="build.started_at > rdate">
             {{ build.properties.portname }}
           </td>
-          <td v-if="build.started_at > rdate">{{ build.workerid }}</td>
+          <td v-if="build.started_at > rdate">
+            <a v-bind:href="'/#/workers/' + build.workerid" target="_blank">
+              <span
+                :class="setWorkerStatus(getWorkerDetails(build.workerid))"
+                class="badge-status ng-binding"
+              >
+                {{ getWorkerDetails(build.workerid).name }}
+              </span>
+            </a>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -102,6 +130,51 @@ export default {
     }
   },
   methods: {
+    setWorkerStatus: function(w) {
+      if (w.connected_to.length) {
+        return 'results_SUCCESS'
+      } else {
+        return 'results_FAILURE'
+      }
+    },
+    setResultBadge: function(b) {
+      let result
+      if (!b.complete && b.started_at >= 0) {
+        result = 'PENDING'
+      } else {
+        switch (b.results) {
+          case 0:
+            result = 'SUCCESS'
+            break
+          case 1:
+            result = 'WARNINGS'
+            break
+          case 2:
+            result = 'FAILURE'
+            break
+          case 3:
+            result = 'SKIPPED'
+            break
+          case 4:
+            result = 'EXCEPTION'
+            break
+          case 5:
+            result = 'CANCELLED'
+            break
+          default:
+            result = 'unknown'
+        }
+      }
+      return 'results_' + result
+    },
+    getWorkerDetails: function(workerid) {
+      var workers = this.$data.workers
+      for (const worker of workers) {
+        if (workerid === worker.workerid) {
+          return worker
+        }
+      }
+    },
     getBuilderDetails: function(builderid) {
       var builders = this.$data.builders
       for (const builder of builders) {
