@@ -17,7 +17,7 @@
     "Vue"
   ],
   "author": "Rajdeep Bharati",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/macports/buildbot-macports-custom-views/issues"
   },
