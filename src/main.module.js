@@ -33,11 +33,7 @@ module.config([
         '<filter-builds-directive></filter-builds-directive>',
         'filterbuilds'
       ],
-      [
-        'Ports Build History',
-        '<ports-build-history></ports-build-history>',
-        'ports'
-      ]
+      ['Ports Build History', '<ports-directive></ports-directive>', 'ports']
     ]) {
       group = {
         name: i[0],
@@ -93,3 +89,4 @@ module.config([
 
 require('./changes.directive.js')
 require('./filter_builds.directive.js')
+require('./ports.directive.js')
