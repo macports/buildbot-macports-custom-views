@@ -3,16 +3,8 @@ var CopyWebpackPlugin = require('copy-webpack-plugin')
 var TsConfigPathsPlugin = require('awesome-typescript-loader')
   .TsConfigPathsPlugin
 var BitBarWebpackProgressPlugin = require('bitbar-webpack-progress-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-
-const extractLess = new ExtractTextPlugin({
-  filename: 'styles.css'
-  // might want to use style-loader for development?
-  //   it lets you hot-reload styles? If so, this next commented line prevents styles.css from getting built statically.
-  // disable: process.env.NODE_ENV === 'development'
-})
 
 function isExternal(module) {
   var context = module.context
@@ -26,7 +18,7 @@ function isExternal(module) {
 
 module.exports = {
   entry: {
-    scripts: './src/main.module.js', //'./src/changes.directive.js','./src/fb.directive.js'],
+    scripts: './src/main.module.js',
     styles: './src/styles/styles.less'
   },
   output: {
@@ -51,7 +43,9 @@ module.exports = {
     // new VueLoaderPlugin(),
     new BitBarWebpackProgressPlugin(),
     new VueLoaderPlugin(),
-    extractLess
+    new MiniCssExtractPlugin({
+      filename: 'styles.css'
+    })
   ],
 
   // Enable sourcemaps for debugging webpack's output.
@@ -96,18 +90,12 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: extractLess.extract({
-          use: [
-            {
-              loader: 'css-loader'
-            },
-            {
-              loader: 'less-loader'
-            }
-          ],
-          // use style-loader in development
-          fallback: 'style-loader'
-        })
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
+          'css-loader'
+        ]
       }
       // {
       //   test: /\.vue$/,
