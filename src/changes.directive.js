@@ -11,6 +11,7 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
   'resultsService',
   '$uibModal',
   '$timeout',
+  '$location',
   (
     $q,
     $window,
@@ -18,7 +19,8 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
     bbSettingsService,
     resultsService,
     $uibModal,
-    $timeout
+    $timeout,
+    $location
   ) => {
     const settings = bbSettingsService.getSettingsGroup(
       'BuildbotMacPortsCustomViews'
@@ -62,6 +64,7 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
       })
 
       var props = {
+        $location,
         builders,
         builds,
         buildrequests,
@@ -93,6 +96,7 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
       /* cannot pass the changes directly, as the magic of buildbot 
             data module clashes with the magic of vue observers */
       var data = {
+        location: $location,
         builders: [],
         builds: [],
         buildrequests: [],
@@ -110,6 +114,7 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
       })
 
       function update() {
+        data.location = $location
         data.builders = builders.slice()
         data.builds = builds.slice()
         data.buildrequests = buildrequests.slice()
@@ -120,6 +125,7 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
         data.sourcestamps = sourcestamps.slice()
       }
 
+      $location.onChange = () => update()
       builders.onChange = () => update()
       builds.onChange = () => update()
       buildrequests.onChange = () => update()

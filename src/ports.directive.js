@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Ports from './components/Ports.vue'
+import PortsList from './components/PortsList.vue'
 
 angular.module('buildbot_macports_custom_views').directive('portsDirective', [
   '$q',
@@ -9,6 +10,7 @@ angular.module('buildbot_macports_custom_views').directive('portsDirective', [
   'resultsService',
   '$uibModal',
   '$timeout',
+  '$location',
   (
     $q,
     $window,
@@ -16,13 +18,18 @@ angular.module('buildbot_macports_custom_views').directive('portsDirective', [
     bbSettingsService,
     resultsService,
     $uibModal,
-    $timeout
+    $timeout,
+    $location
   ) => {
     const settings = bbSettingsService.getSettingsGroup(
       'BuildbotMacPortsCustomViews'
     )
 
     function link(scope, element, attrs) {
+      console.log($location)
+      console.log($location.path())
+      console.log($location.search()['id'])
+
       /* create an instance of the data accessor */
       var dataAccessor = dataService.open().closeOnDestroy(scope)
       console.log('dataccessor', dataAccessor)
@@ -60,6 +67,7 @@ angular.module('buildbot_macports_custom_views').directive('portsDirective', [
       })
 
       var props = {
+        $location,
         builders,
         builds,
         buildrequests,
@@ -70,11 +78,12 @@ angular.module('buildbot_macports_custom_views').directive('portsDirective', [
         sourcestamps
       }
 
-      var ComponentClass = Vue.extend(Ports)
+      var ComponentClass = Vue.extend(PortsList)
 
       /* cannot pass the changes directly, as the magic of buildbot 
           data module clashes with the magic of vue observers */
       var data = {
+        location: $location,
         builders: [],
         builds: [],
         buildrequests: [],
@@ -91,6 +100,7 @@ angular.module('buildbot_macports_custom_views').directive('portsDirective', [
       })
 
       function update() {
+        data.location = $location
         data.builders = builders.slice()
         data.builds = builds.slice()
         data.buildrequests = buildrequests.slice()
@@ -100,7 +110,7 @@ angular.module('buildbot_macports_custom_views').directive('portsDirective', [
         data.changesources = changesources.slice()
         data.sourcestamps = sourcestamps.slice()
       }
-
+      $location.onChange = () => update()
       builders.onChange = () => update()
       builds.onChange = () => update()
       buildrequests.onChange = () => update()

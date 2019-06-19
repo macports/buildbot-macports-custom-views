@@ -11,6 +11,7 @@ angular
     'resultsService',
     '$uibModal',
     '$timeout',
+    '$location',
     (
       $q,
       $window,
@@ -18,7 +19,8 @@ angular
       bbSettingsService,
       resultsService,
       $uibModal,
-      $timeout
+      $timeout,
+      $location
     ) => {
       const settings = bbSettingsService.getSettingsGroup(
         'BuildbotMacPortsCustomViews'
@@ -62,6 +64,7 @@ angular
         })
 
         var props = {
+          $location,
           builders,
           builds,
           buildrequests,
@@ -77,6 +80,7 @@ angular
         /* cannot pass the changes directly, as the magic of buildbot 
           data module clashes with the magic of vue observers */
         var data = {
+          location: $location,
           builders: [],
           builds: [],
           buildrequests: [],
@@ -93,6 +97,7 @@ angular
         })
 
         function update() {
+          data.location = $location
           data.builders = builders.slice()
           data.builds = builds.slice()
           data.buildrequests = buildrequests.slice()
@@ -103,6 +108,7 @@ angular
           data.sourcestamps = sourcestamps.slice()
         }
 
+        $location.onChange = () => update()
         builders.onChange = () => update()
         builds.onChange = () => update()
         buildrequests.onChange = () => update()
