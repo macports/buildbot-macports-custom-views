@@ -107,23 +107,7 @@ export default {
       buttonTxt: 'Show changes after this date',
       before: true,
       commit: 'null',
-      rdate: new Date().getTime() / 1000,
-      minDate: new Date(
-        new Date().getFullYear() - 12,
-        new Date().getMonth(),
-        new Date().getDate(),
-        0,
-        0,
-        0
-      ),
-      maxDate: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate(),
-        0,
-        0,
-        0
-      )
+      rdate: new Date().getTime() / 1000
     }
   },
   methods: {

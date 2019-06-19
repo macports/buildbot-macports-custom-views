@@ -62,14 +62,6 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
       })
 
       var props = {
-        maxDate: new Date(
-          new Date().getFullYear(),
-          new Date().getMonth(),
-          new Date().getDate(),
-          0,
-          0,
-          0
-        ),
         builders,
         builds,
         buildrequests,
