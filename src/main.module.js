@@ -28,7 +28,7 @@ module
       const groups = []
 
       for (let i of [
-        ['Changes', '<changes-directive></changes-directive>', 'changes'],
+        ['Changes', '<changes-directive></changes-directive>', 'changeslist'],
         [
           'Filter Builds',
           '<filter-builds-directive></filter-builds-directive>',
