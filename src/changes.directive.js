@@ -108,7 +108,6 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
       }
 
       var e = new ComponentClass({
-        router,
         data: data,
         el: element.get(0)
       })

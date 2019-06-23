@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="root">
     <section v-if="errored">
       <p>
         We're sorry, we're not able to retrieve this information at the moment,
@@ -12,10 +12,24 @@
         <span class="msg">Crunching latest data...</span>
       </div>
       <div v-else>
-        <p>{{ location }}</p>
         <input type="text" v-model="search" />
-        <div v-for="(port, index) in filteredPorts" :key="index">
-          <button @click="setId">{{ port.name }}</button>
+        <br />
+        <div>
+          <Ports :portname="location.search()['id']" />
+        </div>
+        <div
+          class="btn-group-verticalq"
+          v-for="(port, index) in filteredPorts"
+          :key="index"
+        >
+          <button
+            type="button"
+            class="btnq btn-defaultq"
+            @click="setId(port.name)"
+          >
+            {{ port.name }}
+          </button>
+          <br />
         </div>
       </div>
     </section>
@@ -23,8 +37,13 @@
 </template>
 <script>
 import axios from 'axios'
+import Ports from './Ports'
 
 export default {
+  name: 'PortsList',
+  components: {
+    Ports
+  },
   data() {
     return {
       search: '',
@@ -42,7 +61,7 @@ export default {
   },
   mounted() {
     axios
-      .get(`http://frozen-falls-98471.herokuapp.com/api/v1/ports/25/page/1/`)
+      .get(`http://frozen-falls-98471.herokuapp.com/api/v1/ports/25000/page/1/`)
       .then(response => (this.portsList = response.data))
       .catch(error => {
         console.log(error)
@@ -51,10 +70,8 @@ export default {
       .finally(() => (this.loading = false))
   },
   methods: {
-    setId() {
-      //   this.$data.location.$$path = '/ports/gh'
-      //   this.$data.location.$$search = '/gh'
-      this.$data.location.search()['id']
+    setId(portname) {
+      // this.$data.location.search('id', portname)
     }
   }
 }

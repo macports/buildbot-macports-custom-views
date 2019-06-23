@@ -60,6 +60,7 @@
             <tbody>
               <tr>
                 <th
+                  style="background-color: #42b983"
                   v-for="(myBuild, index) in getUniqueBuilders(myBuilds)"
                   :key="index"
                 >
@@ -103,12 +104,13 @@ import axios from 'axios'
 import _ from 'lodash'
 
 export default {
-  name: 'App',
+  name: 'Ports',
+  props: ['portname'],
   data() {
     return {
       info: null,
       myBuilds: null,
-      portname: 'nodejs10',
+      portname: this.$props.portname,
       loading: true,
       errored: false
     }
@@ -117,7 +119,7 @@ export default {
     axios
       .get(
         `https://frozen-falls-98471.herokuapp.com/api/v1/port/${
-          this.$data.portname
+          this.$props.portname
         }/`
       )
       .then(response => (this.info = response.data))
@@ -128,7 +130,7 @@ export default {
     axios
       .get(
         `https://frozen-falls-98471.herokuapp.com/api/v1/port/${
-          this.$data.portname
+          this.$props.portname
         }/builds`
       )
       .then(response => (this.myBuilds = response.data))

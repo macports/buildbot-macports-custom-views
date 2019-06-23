@@ -19,7 +19,7 @@
       {{ formatDate(rdate) }}
     </h2>
     <table class="table table-hover table-striped table-condensed">
-      <tbody>
+      <tbody id="htb">
         <tr>
           <th>Build</th>
           <th>Started at</th>
@@ -248,5 +248,8 @@ th {
 .btn-green {
   background-color: #42b983;
   color: #ffffff;
+}
+#htb > tr > th {
+  background-color: #42b983;
 }
 </style>
