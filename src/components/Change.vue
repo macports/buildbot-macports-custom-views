@@ -1,15 +1,6 @@
 <template>
   <div class="change-modal">
     <div class="modal-header">
-      <!-- <button
-        @click="$emit('close')"
-        type="button"
-        class="close"
-        data-dismiss="modal"
-        aria-label="Close"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button> -->
       <h3 class="modal-title">
         <a v-bind:href="$props.change.revlink" target="_blank">{{
           $props.change.comments.split('\n')[0]
