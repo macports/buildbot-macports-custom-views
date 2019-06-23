@@ -5,7 +5,22 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "test": "jest"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      ".*\\.(vue)$": "vue-jest",
+      "^.+\\.js$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    }
   },
   "repository": {
     "type": "git",
@@ -24,7 +39,6 @@
   "homepage": "https://github.com/macports/buildbot-macports-custom-views#readme",
   "dependencies": {
     "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
     "@hapi/cryptiles": "^4.2.0",
     "@hapi/hoek": "^7.1.0",
     "ajv": "^6.10.0",
@@ -40,12 +54,19 @@
     "vuejs-datepicker": "^1.5.4"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.4.5",
+    "@vue/test-utils": "^1.0.0-beta.29",
     "awesome-typescript-loader": "^5.2.1",
+    "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
     "bitbar-webpack-progress-plugin": "^1.0.0",
     "copy-webpack-plugin": "^5.0.3",
     "css-loader": "^3.0.0",
+    "expect": "^24.8.0",
     "file-loader": "^4.0.0",
+    "jest": "^24.8.0",
+    "jsdom": "^15.1.1",
+    "jsdom-global": "^3.0.2",
     "json2ts": "0.0.7",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
@@ -53,7 +74,9 @@
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
     "typescript": "^3.5.2",
+    "vue-jest": "^4.0.0-beta.2",
     "webpack": "^4.34.0",
-    "webpack-cli": "^3.3.4"
+    "webpack-cli": "^3.3.4",
+    "webpack-node-externals": "^1.7.2"
   }
 }
