@@ -104,7 +104,7 @@ import axios from 'axios'
 import _ from 'lodash'
 
 export default {
-  name: 'Ports',
+  name: 'Port',
   props: ['portname'],
   data() {
     return {

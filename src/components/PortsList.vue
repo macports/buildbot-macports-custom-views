@@ -15,7 +15,7 @@
         <input type="text" v-model="search" />
         <br />
         <div>
-          <Ports :portname="location.search()['id']" />
+          <Port :portname="location.search()['id']" />
         </div>
         <div
           class="btn-group-verticalq"
@@ -37,12 +37,12 @@
 </template>
 <script>
 import axios from 'axios'
-import Ports from './Ports'
+import Port from './Port.vue'
 
 export default {
   name: 'PortsList',
   components: {
-    Ports
+    Port
   },
   data() {
     return {

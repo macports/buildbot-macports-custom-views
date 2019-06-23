@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import Ports from './components/Ports.vue'
 import PortsList from './components/PortsList.vue'
 
 angular.module('buildbot_macports_custom_views').directive('portsDirective', [
