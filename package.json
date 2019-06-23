@@ -24,7 +24,7 @@
     },
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "**/*.{js,vue}",
+      "**/*.{vue,}",
       "!**/node_modules/**"
     ],
     "coverageReporters": [
