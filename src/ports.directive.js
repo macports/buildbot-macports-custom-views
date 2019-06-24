@@ -1,9 +1,7 @@
 import Vue from 'vue'
-import Router from 'vue-router'
-import ChangesList from './components/ChangesList.vue'
-import Change from './components/Change.vue'
+import PortsList from './components/PortsList.vue'
 
-angular.module('buildbot_macports_custom_views').directive('changesDirective', [
+angular.module('buildbot_macports_custom_views').directive('portsDirective', [
   '$q',
   '$window',
   'dataService',
@@ -75,26 +73,10 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
         sourcestamps
       }
 
-      Vue.use(Router)
-
-      const router = new Router({
-        routes: [
-          {
-            path: '#/changes',
-            component: ChangesList
-          },
-          {
-            path: '/changes/change/:id',
-            name: 'change',
-            component: Change
-          }
-        ]
-      })
-
-      var ComponentClass = Vue.extend(ChangesList)
+      var ComponentClass = Vue.extend(PortsList)
 
       /* cannot pass the changes directly, as the magic of buildbot 
-            data module clashes with the magic of vue observers */
+          data module clashes with the magic of vue observers */
       var data = {
         location: $location,
         builders: [],

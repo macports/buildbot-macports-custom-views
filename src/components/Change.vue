@@ -1,53 +1,44 @@
 <template>
   <div class="change-modal">
-    <div class="modal-header">
-      <button
-        @click="$emit('close')"
-        type="button"
-        class="close"
-        data-dismiss="modal"
-        aria-label="Close"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <h3 class="modal-title">
-        <a v-bind:href="$attrs.change.revlink" target="_blank">{{
-          $attrs.change.comments.split('\n')[0]
-        }}</a>
-      </h3>
-    </div>
-    <div class="modal-body">
-      <h4>Author:</h4>
-      {{ $attrs.change.author }}
-      <h4>Timestamp:</h4>
-      {{ dt($attrs.change.when_timestamp) }}
-      <h4>Comments:</h4>
-      <code>
+    <div v-if="loading"></div>
+    <div v-else>
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <a v-bind:href="change.revlink" target="_blank">{{
+            change.comments.split('\n')[0]
+          }}</a>
+        </h3>
+      </div>
+      <div class="modal-body">
+        <h4>Author:</h4>
+        {{ change.author }}
+        <h4>Timestamp:</h4>
+        {{ dt(change.when_timestamp) }}
+        <h4>Comments:</h4>
+        <code>
+          <div
+            class="comments"
+            v-for="(line, index) in change.comments.split('\n')"
+            :key="index"
+          >
+            <div v-html="createLinks(line)"></div>
+          </div>
+        </code>
+        <h4>Changed files:</h4>
+        <div v-for="file in change.files" :key="file">
+          {{ file }}
+        </div>
+        <h4>Builds:</h4>
         <div
-          class="comments"
-          v-for="(line, index) in $attrs.change.comments.split('\n')"
+          v-for="(cbs, index) in map(change.changeid, change.sourcestamp.ssid)"
           :key="index"
         >
-          <div v-html="createLinks(line)"></div>
+          <div v-if="cbs.buildid">
+            Buildid: {{ cbs.buildid }}, Builderid: {{ cbs.builderid }}, State:
+            {{ cbs.state_string }}
+          </div>
+          <div v-else>None</div>
         </div>
-      </code>
-      <h4>Changed files:</h4>
-      <div v-for="file in $attrs.change.files" :key="file">
-        {{ file }}
-      </div>
-      <h4>Builds:</h4>
-      <div
-        v-for="(cbs, index) in map(
-          $attrs.change.changeid,
-          $attrs.change.sourcestamp.ssid
-        )"
-        :key="index"
-      >
-        <div v-if="cbs.buildid">
-          Buildid: {{ cbs.buildid }}, Builderid: {{ cbs.builderid }}, State:
-          {{ cbs.state_string }}
-        </div>
-        <div v-else>None</div>
       </div>
     </div>
   </div>
@@ -55,11 +46,44 @@
 
 <script>
 import Autolinker from 'autolinker'
+import axios from 'axios'
 
 export default {
   name: 'Change',
   data() {
-    return {}
+    return {
+      loading: true,
+      errored: false,
+      change: null,
+      baseURL: 'http://localhost:8010'
+    }
+  },
+  props: [
+    'change',
+    'builders',
+    'builds',
+    'buildrequests',
+    'buildsets',
+    'location',
+    'changeId'
+  ],
+  mounted() {
+    console.log(this.$props)
+    if ('changeid' in this.$props.change) {
+      this.change = this.$props.change
+      this.loading = false
+    } else {
+      axios
+        .get(`${this.baseURL}/api/v2/changes/${this.$props.changeId}`)
+        .then(response => {
+          this.change = response.data.changes[0]
+        })
+        .catch(error => {
+          console.log(error)
+          this.errored = true
+        })
+        .finally(() => (this.loading = false))
+    }
   },
   methods: {
     getResult: function(b) {
@@ -93,8 +117,8 @@ export default {
       return result
     },
     map: function(changeid, ssid) {
-      var buildsets = this.$attrs.buildsets
-      var builds = this.$attrs.builds
+      var buildsets = this.$props.buildsets
+      var builds = this.$props.builds
       var changeBuildsets = []
       for (const buildset of buildsets) {
         for (const sourcestamp of buildset.sourcestamps) {
@@ -104,7 +128,7 @@ export default {
           }
         }
       }
-      var buildrequests = this.$attrs.buildrequests
+      var buildrequests = this.$props.buildrequests
       for (const buildrequest of buildrequests) {
         for (const changeBuildset of changeBuildsets) {
           if (changeBuildset.bsid === buildrequest.buildsetid) {
@@ -125,7 +149,7 @@ export default {
           }
         }
       }
-      this.$attrs.buildsforchange = changeBuildsets
+      this.$props.buildsforchange = changeBuildsets
       var myarray = []
       for (const cbs of changeBuildsets) {
         myarray.push({
