@@ -1,10 +1,13 @@
 <template>
   <div class="change-modal">
-    <div v-if="loading"></div>
+    <div v-if="loading" />
     <div v-else>
       <div class="modal-header">
         <h3 class="modal-title">
-          <a v-bind:href="change.revlink" target="_blank">{{
+          <a
+            :href="change.revlink"
+            target="_blank"
+          >{{
             change.comments.split('\n')[0]
           }}</a>
         </h3>
@@ -17,15 +20,18 @@
         <h4>Comments:</h4>
         <code>
           <div
-            class="comments"
             v-for="(line, index) in change.comments.split('\n')"
             :key="index"
+            class="comments"
           >
-            <div v-html="createLinks(line)"></div>
+            <div v-html="createLinks(line)" />
           </div>
         </code>
         <h4>Changed files:</h4>
-        <div v-for="file in change.files" :key="file">
+        <div
+          v-for="file in change.files"
+          :key="file"
+        >
           {{ file }}
         </div>
         <h4>Builds:</h4>
@@ -37,7 +43,9 @@
             Buildid: {{ cbs.buildid }}, Builderid: {{ cbs.builderid }}, State:
             {{ cbs.state_string }}
           </div>
-          <div v-else>None</div>
+          <div v-else>
+            None
+          </div>
         </div>
       </div>
     </div>
@@ -50,6 +58,15 @@ import axios from 'axios'
 
 export default {
   name: 'Change',
+  props: {
+    change: Object,
+    builders: Array,
+    builds: Array,
+    buildrequests: Array,
+    buildsets: Array,
+    location: Object,
+    changeId: Number
+  },
   data() {
     return {
       loading: true,
@@ -58,15 +75,6 @@ export default {
       baseURL: 'http://localhost:8010'
     }
   },
-  props: [
-    'change',
-    'builders',
-    'builds',
-    'buildrequests',
-    'buildsets',
-    'location',
-    'changeId'
-  ],
   mounted() {
     console.log(this.$props)
     if ('changeid' in this.$props.change) {

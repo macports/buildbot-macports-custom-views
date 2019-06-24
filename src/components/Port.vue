@@ -7,8 +7,11 @@
       </p>
     </section>
     <section v-else>
-      <div v-if="loading" class="load-indicator spinner loading">
-        <i class="fa fa-circle-o-notch fa-spin fa-2x spin"></i>
+      <div
+        v-if="loading"
+        class="load-indicator spinner loading"
+      >
+        <i class="fa fa-circle-o-notch fa-spin fa-2x spin" />
         <span class="msg">Crunching latest data...</span>
       </div>
       <div v-else>
@@ -24,45 +27,48 @@
           </a>
         </h1>
         <div class="details">
-          <strong>Version:</strong> {{ info.version }} <br />
+          <strong>Version:</strong> {{ info.version }} <br>
           <strong>Maintainers:</strong>
-          <span v-for="(m, index) in info.maintainers" :key="index">
+          <span
+            v-for="(m, index) in info.maintainers"
+            :key="index"
+          >
             <a
               v-if="m.github"
-              v-bind:href="'https://github.com/' + m.github"
+              :href="'https://github.com/' + m.github"
               target="_blank"
             >
-              {{ m.github }}</a
-            >
+              {{ m.github }}</a>
             <a
               v-else
-              v-bind:href="'mailto:' + m.name + '@' + m.domain"
+              :href="'mailto:' + m.name + '@' + m.domain"
               target="_top"
             >
-              {{ m.name }}</a
-            ><span v-if="index + 1 < info.maintainers.length">, </span>
+              {{ m.name }}</a><span v-if="index + 1 < info.maintainers.length">, </span>
           </span>
-          <br />
+          <br>
           <strong>Categories:</strong>
-          <span v-for="(c, index) in info.categories" :key="index">
+          <span
+            v-for="(c, index) in info.categories"
+            :key="index"
+          >
             <a
               :href="
                 'https://github.com/macports/macports-ports/tree/master/' + c
               "
               target="_blank"
             >
-              {{ c }}</a
-            ><span v-if="index + 1 < info.categories.length">, </span>
+              {{ c }}</a><span v-if="index + 1 < info.categories.length">, </span>
           </span>
-          <br />
+          <br>
           <h3>Builds for {{ info.name }}</h3>
           <table class="table table-hover table-striped table-condensed">
             <tbody>
               <tr>
                 <th
-                  style="background-color: #42b983"
                   v-for="(myBuild, index) in getUniqueBuilders(myBuilds)"
                   :key="index"
+                  style="background-color: #42b983"
                 >
                   {{ myBuild.builder_name.name }}
                 </th>
@@ -70,18 +76,33 @@
             </tbody>
             <tbody>
               <tr>
-                <td v-for="(mb, index) in groups" :key="index">
-                  <div class="status" v-if="mb">
-                    <tr v-for="(m, index) in mb" :key="index">
+                <td
+                  v-for="(mb, index) in groups"
+                  :key="index"
+                >
+                  <div
+                    v-if="mb"
+                    class="status"
+                  >
+                    <tr
+                      v-for="(m, index2) in mb"
+                      :key="index2"
+                    >
                       <div v-if="m.status === 'build successful'">
-                        <a href="" target="_blank">
+                        <a
+                          href=""
+                          target="_blank"
+                        >
                           <span class="badge-status ng-binding results_SUCCESS">
                             {{ m.build_id }}
                           </span>
                         </a>
                       </div>
                       <div v-else>
-                        <a href="" target="_blank">
+                        <a
+                          href=""
+                          target="_blank"
+                        >
                           <span class="badge-status ng-binding results_FAILURE">
                             {{ m.build_id }}
                           </span>
@@ -105,17 +126,7 @@ import _ from 'lodash'
 
 export default {
   name: 'Port',
-  props: ['portname'],
-  mounted() {
-    this.init()
-  },
-  watch: {
-    portname: function(newVal, oldVal) {
-      this.$props.portname = newVal
-      this.$data.portname = newVal
-      this.init()
-    }
-  },
+  props: { portname: String },
   data() {
     return {
       info: null,
@@ -132,6 +143,16 @@ export default {
         return e.builder_name.name
       })
     }
+  },
+  watch: {
+    portname: function(newVal, oldVal) {
+      this.$props.portname = newVal
+      this.$data.portname = newVal
+      this.init()
+    }
+  },
+  mounted() {
+    this.init()
   },
   methods: {
     init() {

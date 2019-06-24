@@ -7,21 +7,28 @@
       </p>
     </section>
     <section v-else>
-      <div v-if="loading" class="load-indicator spinner loading">
-        <i class="fa fa-circle-o-notch fa-spin fa-2x spin"></i>
+      <div
+        v-if="loading"
+        class="load-indicator spinner loading"
+      >
+        <i class="fa fa-circle-o-notch fa-spin fa-2x spin" />
         <span class="msg">Crunching latest data...</span>
       </div>
       <div v-else>
-        <input type="text" v-model="search" placeholder="Search for port" />
-        <br />
+        <input
+          v-model="search"
+          type="text"
+          placeholder="Search for port"
+        >
+        <br>
         <div v-if="showPort || location.$$url !== '/ports'">
           <Port :portname="location.search()['id']" />
         </div>
-        <br />
+        <br>
         <div
-          class="btn-group-vertical group"
           v-for="(port, index) in filteredPorts"
           :key="index"
+          class="btn-group-vertical group"
         >
           <button
             type="button"
@@ -30,7 +37,7 @@
           >
             {{ port.name }}
           </button>
-          <br />
+          <br>
         </div>
       </div>
     </section>
@@ -63,7 +70,7 @@ export default {
   },
   mounted() {
     axios
-      .get(`http://frozen-falls-98471.herokuapp.com/api/v1/ports/25000/page/1/`)
+      .get('http://frozen-falls-98471.herokuapp.com/api/v1/ports/25000/page/1/')
       .then(response => (this.portsList = response.data))
       .catch(error => {
         console.log(error)

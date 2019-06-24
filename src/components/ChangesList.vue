@@ -6,10 +6,13 @@
           :placeholder="formatDate(rdate)"
           :format="'yyyy-MM-dd'"
           @selected="doStuff"
-        ></datepicker>
+        />
       </div>
       <div id="bt">
-        <button class="btn btn-green" @click="changeDir">
+        <button
+          class="btn btn-green"
+          @click="changeDir"
+        >
           {{ buttonTxt }}
         </button>
       </div>
@@ -35,42 +38,90 @@
           </tr>
         </tbody>
         <tbody v-if="before">
-          <tr v-for="change in changes" :key="change.id">
-            <td v-if="change.when_timestamp < rdate" key="a"></td>
-            <td v-if="change.when_timestamp < rdate" key="when_timestamp">
+          <tr
+            v-for="change in changes"
+            :key="change.id"
+          >
+            <td
+              v-if="change.when_timestamp < rdate"
+              key="a"
+            />
+            <td
+              v-if="change.when_timestamp < rdate"
+              key="when_timestamp"
+            >
               {{ formatDate(change.when_timestamp) }}
             </td>
-            <td v-if="change.when_timestamp < rdate" key="comments">
+            <td
+              v-if="change.when_timestamp < rdate"
+              key="comments"
+            >
               {{ change.comments }}
             </td>
-            <td v-if="change.when_timestamp < rdate" key="committer">
+            <td
+              v-if="change.when_timestamp < rdate"
+              key="committer"
+            >
               {{ change.committer }}
             </td>
-            <td v-if="change.when_timestamp < rdate" key="author">
+            <td
+              v-if="change.when_timestamp < rdate"
+              key="author"
+            >
               {{ change.author }}
             </td>
-            <td v-if="change.when_timestamp < rdate" key="details">
-              <button class="btn btn-green" v-on:click="show(change)">
+            <td
+              v-if="change.when_timestamp < rdate"
+              key="details"
+            >
+              <button
+                class="btn btn-green"
+                @click="show(change)"
+              >
                 More
               </button>
             </td>
           </tr>
         </tbody>
         <tbody v-else>
-          <tr v-for="change in changes" :key="change.id">
-            <td v-if="change.when_timestamp > rdate" key="a"></td>
-            <td v-if="change.when_timestamp > rdate" key="when_timestamp">
+          <tr
+            v-for="change in changes"
+            :key="change.id"
+          >
+            <td
+              v-if="change.when_timestamp > rdate"
+              key="a"
+            />
+            <td
+              v-if="change.when_timestamp > rdate"
+              key="when_timestamp"
+            >
               {{ formatDate(change.when_timestamp) }}
             </td>
-            <td v-if="change.when_timestamp > rdate" key="comments">
+            <td
+              v-if="change.when_timestamp > rdate"
+              key="comments"
+            >
               {{ change.comments }}
             </td>
-            <td v-if="change.when_timestamp > rdate" key="committer"></td>
-            <td v-if="change.when_timestamp > rdate" key="author">
+            <td
+              v-if="change.when_timestamp > rdate"
+              key="committer"
+            />
+            <td
+              v-if="change.when_timestamp > rdate"
+              key="author"
+            >
               {{ change.author }}
             </td>
-            <td v-if="change.when_timestamp > rdate" key="details">
-              <button class="btn btn-green" v-on:click="show(change)">
+            <td
+              v-if="change.when_timestamp > rdate"
+              key="details"
+            >
+              <button
+                class="btn btn-green"
+                @click="show(change)"
+              >
                 More
               </button>
             </td>
@@ -90,8 +141,8 @@
       </button>
       <Change
         :location="location"
-        :changeId="location.search()['id']"
-        :change="this.selectedChange"
+        :change-id="location.search()['id']"
+        :change="selectedChange"
         :builds="builds"
         :builders="builders"
         :buildrequests="buildrequests"

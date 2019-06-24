@@ -9,7 +9,9 @@ module.exports = {
     // 'vue/no-unused-vars': 'error'
     semi: [2, 'never'],
     quotes: ['error', 'single'],
-    indent: ['error', 2, { SwitchCase: 1 }]
+    indent: ['error', 2, { SwitchCase: 1 }],
+    'vue/no-dupe-keys': ['warn'],
+    'vue/require-default-prop': ['off']
   },
   parserOptions: {
     parser: 'babel-eslint',
