@@ -25,10 +25,6 @@ angular.module('buildbot_macports_custom_views').directive('portsDirective', [
     )
 
     function link(scope, element, attrs) {
-      console.log($location)
-      console.log($location.path())
-      console.log($location.search()['id'])
-
       /* create an instance of the data accessor */
       var dataAccessor = dataService.open().closeOnDestroy(scope)
       console.log('dataccessor', dataAccessor)
@@ -99,6 +95,7 @@ angular.module('buildbot_macports_custom_views').directive('portsDirective', [
       })
 
       function update() {
+        data.scope = scope
         data.location = $location
         data.builders = builders.slice()
         data.builds = builds.slice()
@@ -108,7 +105,10 @@ angular.module('buildbot_macports_custom_views').directive('portsDirective', [
         data.changes = changes.slice()
         data.changesources = changesources.slice()
         data.sourcestamps = sourcestamps.slice()
+        scope.$digest()
       }
+
+      scope.onChange = () => update()
       $location.onChange = () => update()
       builders.onChange = () => update()
       builds.onChange = () => update()

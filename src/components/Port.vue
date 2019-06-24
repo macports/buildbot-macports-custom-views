@@ -106,6 +106,16 @@ import _ from 'lodash'
 export default {
   name: 'Port',
   props: ['portname'],
+  mounted() {
+    this.init()
+  },
+  watch: {
+    portname: function(newVal, oldVal) {
+      this.$props.portname = newVal
+      this.$data.portname = newVal
+      this.init()
+    }
+  },
   data() {
     return {
       info: null,
@@ -115,31 +125,7 @@ export default {
       errored: false
     }
   },
-  mounted() {
-    axios
-      .get(
-        `https://frozen-falls-98471.herokuapp.com/api/v1/port/${
-          this.$props.portname
-        }/`
-      )
-      .then(response => (this.info = response.data))
-      .catch(error => {
-        console.log(error)
-        this.errored = true
-      })
-    axios
-      .get(
-        `https://frozen-falls-98471.herokuapp.com/api/v1/port/${
-          this.$props.portname
-        }/builds`
-      )
-      .then(response => (this.myBuilds = response.data))
-      .catch(error => {
-        console.log(error)
-        this.errored = true
-      })
-      .finally(() => (this.loading = false))
-  },
+
   computed: {
     groups(myBuilds) {
       return _.groupBy(this.myBuilds, e => {
@@ -148,6 +134,32 @@ export default {
     }
   },
   methods: {
+    init() {
+      this.loading = true
+      axios
+        .get(
+          `https://frozen-falls-98471.herokuapp.com/api/v1/port/${
+            this.$props.portname
+          }/`
+        )
+        .then(response => (this.info = response.data))
+        .catch(error => {
+          console.log(error)
+          this.errored = true
+        })
+      axios
+        .get(
+          `https://frozen-falls-98471.herokuapp.com/api/v1/port/${
+            this.$props.portname
+          }/builds`
+        )
+        .then(response => (this.myBuilds = response.data))
+        .catch(error => {
+          console.log(error)
+          this.errored = true
+        })
+        .finally(() => (this.loading = false))
+    },
     getUniqueBuilders(myBuilds) {
       var flags = [],
         output = [],

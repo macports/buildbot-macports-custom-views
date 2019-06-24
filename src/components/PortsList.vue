@@ -12,19 +12,20 @@
         <span class="msg">Crunching latest data...</span>
       </div>
       <div v-else>
-        <input type="text" v-model="search" />
+        <input type="text" v-model="search" placeholder="Search for port" />
         <br />
-        <div>
+        <div v-if="showPort || location.$$url !== '/ports'">
           <Port :portname="location.search()['id']" />
         </div>
+        <br />
         <div
-          class="btn-group-verticalq"
+          class="btn-group-vertical group"
           v-for="(port, index) in filteredPorts"
           :key="index"
         >
           <button
             type="button"
-            class="btnq btn-defaultq"
+            class="btn btn-default"
             @click="setId(port.name)"
           >
             {{ port.name }}
@@ -49,7 +50,8 @@ export default {
       search: '',
       portsList: null,
       loading: true,
-      errored: false
+      errored: false,
+      showPort: false
     }
   },
   computed: {
@@ -71,9 +73,17 @@ export default {
   },
   methods: {
     setId(portname) {
-      // this.$data.location.search('id', portname)
+      this.$data.location.search('id', portname)
+      this.$data.scope.$apply()
     }
   }
 }
 </script>
-<style scoped></style>
+<style scoped>
+#root {
+  margin: 8px;
+}
+.group {
+  margin: 0px 1px;
+}
+</style>
