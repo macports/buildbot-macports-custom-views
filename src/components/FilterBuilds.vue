@@ -5,10 +5,15 @@
         :placeholder="formatDate(rdate)"
         :format="'yyyy-MM-dd'"
         @selected="doStuff"
-      ></datepicker>
+      />
     </div>
     <div id="bt">
-      <button class="btn btn-green" @click="changeDir">{{ buttonTxt }}</button>
+      <button
+        class="btn btn-green"
+        @click="changeDir"
+      >
+        {{ buttonTxt }}
+      </button>
     </div>
     <h2 v-if="before">
       Showing all builds before
@@ -30,16 +35,19 @@
         </tr>
       </tbody>
       <tbody v-if="before">
-        <tr v-for="build in builds" :key="build.id">
+        <tr
+          v-for="build in builds"
+          :key="build.id"
+        >
           <td v-if="build.started_at < rdate">
             <a
-              v-bind:href="
+              :href="
                 '/#/builders/' + build.builderid + '/builds/' + build.number
               "
               target="_blank"
             >
               <span
-                v-bind:class="setResultBadge(build)"
+                :class="setResultBadge(build)"
                 class="badge-status ng-binding"
               >
                 {{ build.number }}
@@ -49,7 +57,9 @@
           <td v-if="build.started_at < rdate">
             {{ formatDate(build.started_at) }}
           </td>
-          <td v-if="build.started_at < rdate">{{ build.state_string }}</td>
+          <td v-if="build.started_at < rdate">
+            {{ build.state_string }}
+          </td>
           <td v-if="build.started_at < rdate">
             {{ getBuilderDetails(build.builderid)[0] }}
           </td>
@@ -57,7 +67,10 @@
             {{ build.properties.portname }}
           </td>
           <td v-if="build.started_at < rdate">
-            <a v-bind:href="'/#/workers/' + build.workerid" target="_blank">
+            <a
+              :href="'/#/workers/' + build.workerid"
+              target="_blank"
+            >
               <span
                 :class="setWorkerStatus(getWorkerDetails(build.workerid))"
                 class="badge-status ng-binding"
@@ -69,16 +82,19 @@
         </tr>
       </tbody>
       <tbody v-else>
-        <tr v-for="build in builds" :key="build.id">
+        <tr
+          v-for="build in builds"
+          :key="build.id"
+        >
           <td v-if="build.started_at > rdate">
             <a
-              v-bind:href="
+              :href="
                 '/#/builders/' + build.builderid + '/builds/' + build.number
               "
               target="_blank"
             >
               <span
-                v-bind:class="setResultBadge(build)"
+                :class="setResultBadge(build)"
                 class="badge-status ng-binding"
               >
                 {{ build.number }}
@@ -88,7 +104,9 @@
           <td v-if="build.started_at > rdate">
             {{ formatDate(build.started_at) }}
           </td>
-          <td v-if="build.started_at > rdate">{{ build.state_string }}</td>
+          <td v-if="build.started_at > rdate">
+            {{ build.state_string }}
+          </td>
           <td v-if="build.started_at > rdate">
             {{ getBuilderDetails(build.builderid)[0] }}
           </td>
@@ -96,7 +114,10 @@
             {{ build.properties.portname }}
           </td>
           <td v-if="build.started_at > rdate">
-            <a v-bind:href="'/#/workers/' + build.workerid" target="_blank">
+            <a
+              :href="'/#/workers/' + build.workerid"
+              target="_blank"
+            >
               <span
                 :class="setWorkerStatus(getWorkerDetails(build.workerid))"
                 class="badge-status ng-binding"
