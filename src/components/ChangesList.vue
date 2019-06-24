@@ -1,6 +1,6 @@
 <template>
   <div id="root">
-    <div v-if="showChange == false">
+    <div v-if="showChange == false && location.$$url == '/changeslist'">
       <div id="dp">
         <datepicker
           :placeholder="formatDate(rdate)"
@@ -79,10 +79,17 @@
       </table>
     </div>
     <div v-else>
-      <button class="btn btn-danger" @click="showChange = false">
+      <button
+        class="btn btn-danger"
+        @click="
+          showChange = false
+          location.search({})
+        "
+      >
         Go Back
       </button>
       <Change
+        :location="location"
         :changeId="location.search()['id']"
         :change="this.selectedChange"
         :builds="builds"
@@ -119,7 +126,9 @@ export default {
       selectedChange: {},
       buttonTxt: 'Show changes after this date',
       before: true,
-      rdate: new Date().getTime() / 1000
+      rdate: new Date().getTime() / 1000,
+      loading: true,
+      errored: false
     }
   },
   methods: {
@@ -127,46 +136,7 @@ export default {
       this.$data.location.search('id', change.changeid)
       this.selectedChange = change
       this.showChange = true
-
-      // this.$data.rootScope.location = this.$data.location
-      // console.log(this.$data.rootScope)
-      // this.$data.rootScope.$on('$locationChangeSuccess', () => {
-      //   this.$data.location.search()['id']
-      //   // this.$data.location.search('id', 10)
-      // })
-
-      // this.$modal.show(
-      //   Change,
-      //   {
-      //     change: change,
-      //     builders: this.$data.builders,
-      //     builds: this.$data.builds,
-      //     buildrequests: this.$data.buildrequests,
-      //     buildsets: this.$data.buildsets,
-      //     buttons: [
-      //       {
-      //         title: 'Close'
-      //       }
-      //     ]
-      //   },
-      //   {
-      //     width: 1000,
-      //     height: 'auto',
-      //     pivotX: 0.8,
-      //     scrollable: true,
-      //     resizable: true
-      //   },
-      //   // {
-      //   //   'before-close': event => {
-      //   //     console.log('this will be called before the modal closes')
-      //   //     this.$router.go(-1)
-      //   //     this.$emit('close')
-      //   //   }
-      //   // }
-      // )
-    },
-    hide() {
-      this.$modal.hide(Change)
+      this.$data.scope.$apply()
     },
     changeDir: function() {
       if (this.$data.before) {

@@ -113,6 +113,7 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
       })
 
       function update() {
+        data.scope = scope
         data.location = $location
         data.builders = builders.slice()
         data.builds = builds.slice()
@@ -122,8 +123,10 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
         data.changes = changes.slice()
         data.changesources = changesources.slice()
         data.sourcestamps = sourcestamps.slice()
+        scope.$digest()
       }
 
+      scope.onChange = () => update()
       $location.onChange = () => update()
       builders.onChange = () => update()
       builds.onChange = () => update()

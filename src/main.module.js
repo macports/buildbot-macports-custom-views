@@ -61,7 +61,8 @@ module
           data: {
             group: group.name,
             caption: group.name
-          }
+          },
+          reloadOnSearch: false
         }
 
         $stateProvider.state(state)
