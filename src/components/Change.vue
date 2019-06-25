@@ -71,14 +71,12 @@ export default {
     return {
       loading: true,
       errored: false,
-      change: null,
       baseURL: 'http://localhost:8010'
     }
   },
   mounted() {
     console.log(this.$props)
     if ('changeid' in this.$props.change) {
-      this.change = this.$props.change
       this.loading = false
     } else {
       axios

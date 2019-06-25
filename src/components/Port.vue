@@ -131,7 +131,6 @@ export default {
     return {
       info: null,
       myBuilds: null,
-      portname: this.$props.portname,
       loading: true,
       errored: false
     }
@@ -147,7 +146,6 @@ export default {
   watch: {
     portname: function(newVal, oldVal) {
       this.$props.portname = newVal
-      this.$data.portname = newVal
       this.init()
     }
   },
