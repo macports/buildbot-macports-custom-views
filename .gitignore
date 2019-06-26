@@ -8,3 +8,4 @@ buildbot_macports_custom_views.egg-info/*
 .DS_Store
 .vscode/
 coverage/*
+dist/*
