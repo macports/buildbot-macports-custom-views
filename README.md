@@ -42,6 +42,11 @@ Include it in the buildbot master.cfg:
 c['www']['plugins']['buildbot_macports_custom_views'] = {}
 ```
 
+### Or directly use the ports
+
+    sudo port install buildbot-2 py-buildbot-macports-custom-views
+    buildbot create-master master
+
 ### Start buildbot
 
     buildbot start
