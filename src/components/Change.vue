@@ -71,7 +71,7 @@ export default {
     return {
       loading: true,
       errored: false,
-      baseURL: 'http://localhost:8010'
+      baseURL: window.location.origin
     }
   },
   mounted() {
