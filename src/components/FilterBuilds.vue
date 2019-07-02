@@ -15,6 +15,13 @@
         {{ buttonTxt }}
       </button>
     </div>
+    <form id="search">
+      <input
+        v-model="searchQ"
+        name="query"
+        placeholder="Filter by port"
+      >
+    </form>
     <h2 v-if="before">
       Showing all builds before
       {{ formatDate(rdate) }}
@@ -26,17 +33,17 @@
     <table class="table table-hover table-striped table-condensed">
       <tbody id="htb">
         <tr>
-          <th>Build</th>
-          <th>Started at</th>
-          <th>Status</th>
-          <th>Builder</th>
-          <th>Port(s) affected</th>
-          <th>Worker</th>
+          <th
+            v-for="(key, i) in columns"
+            :key="i"
+          >
+            {{ key.text }}
+          </th>
         </tr>
       </tbody>
       <tbody v-if="before">
         <tr
-          v-for="build in builds"
+          v-for="build in filteredBuilds"
           :key="build.id"
         >
           <td v-if="build.started_at < rdate">
@@ -64,7 +71,15 @@
             {{ getBuilderDetails(build.builderid)[0] }}
           </td>
           <td v-if="build.started_at < rdate">
-            {{ build.properties.portname }}
+            <div v-if="build.properties.portname">
+              {{ build.properties.portname[0] }}
+            </div>
+            <div v-else-if="build.properties.fullportlist">
+              {{ build.properties.fullportlist[0] }}
+            </div>
+            <div v-else-if="build.properties.portlist">
+              {{ build.properties.portlist[0] }}
+            </div>
           </td>
           <td v-if="build.started_at < rdate">
             <a
@@ -83,7 +98,7 @@
       </tbody>
       <tbody v-else>
         <tr
-          v-for="build in builds"
+          v-for="build in filteredBuilds"
           :key="build.id"
         >
           <td v-if="build.started_at > rdate">
@@ -111,7 +126,15 @@
             {{ getBuilderDetails(build.builderid)[0] }}
           </td>
           <td v-if="build.started_at > rdate">
-            {{ build.properties.portname }}
+            <div v-if="build.properties.portname">
+              {{ build.properties.portname[0] }}
+            </div>
+            <div v-else-if="build.properties.fullportlist">
+              {{ build.properties.fullportlist[0] }}
+            </div>
+            <div v-else-if="build.properties.portlist">
+              {{ build.properties.portlist[0] }}
+            </div>
           </td>
           <td v-if="build.started_at > rdate">
             <a
@@ -142,9 +165,52 @@ export default {
   },
   data() {
     return {
+      columns: [
+        { name: 'build', text: 'Build' },
+        { name: 'started_at', text: 'Started at' },
+        { name: 'status', text: 'Status' },
+        { name: 'builder', text: 'Builder' },
+        { name: 'ports', text: 'Port(s) affected' },
+        { name: 'worker', text: 'Worker' }
+      ],
+      searchQ: '',
       buttonTxt: 'Show builds after this date',
       before: true,
       rdate: new Date().getTime() / 1000
+    }
+  },
+  computed: {
+    filteredBuilds: function() {
+      var filterKey = this.searchQ && this.searchQ.toLowerCase()
+      var fBuilds = this.builds
+      if (filterKey) {
+        fBuilds = fBuilds.filter(function(row) {
+          return Object.keys(row).some(function(key) {
+            if (key == 'properties') {
+              if (row[key]['portname']) {
+                return (
+                  String(row[key]['portname'][0])
+                    .toLowerCase()
+                    .indexOf(filterKey) > -1
+                )
+              } else if (row[key]['fullportlist']) {
+                return (
+                  String(row[key]['fullportlist'][0])
+                    .toLowerCase()
+                    .indexOf(filterKey) > -1
+                )
+              } else if (row[key]['portlist']) {
+                return (
+                  String(row[key]['portlist'][0])
+                    .toLowerCase()
+                    .indexOf(filterKey) > -1
+                )
+              }
+            }
+          })
+        })
+      }
+      return fBuilds
     }
   },
   methods: {
