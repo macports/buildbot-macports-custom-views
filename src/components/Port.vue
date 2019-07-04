@@ -157,7 +157,7 @@ export default {
       this.loading = true
       axios
         .get(
-          `https://frozen-falls-98471.herokuapp.com/api/v1/port/${
+          `http://ec2-52-34-234-111.us-west-2.compute.amazonaws.com/api/v1/port/${
             this.$props.portname
           }/`
         )
@@ -168,7 +168,7 @@ export default {
         })
       axios
         .get(
-          `https://frozen-falls-98471.herokuapp.com/api/v1/port/${
+          `http://ec2-52-34-234-111.us-west-2.compute.amazonaws.com/api/v1/port/${
             this.$props.portname
           }/builds`
         )
