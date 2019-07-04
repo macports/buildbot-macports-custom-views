@@ -1,7 +1,5 @@
 import Vue from 'vue'
-import Router from 'vue-router'
 import ChangesList from './components/ChangesList.vue'
-import Change from './components/Change.vue'
 
 angular.module('buildbot_macports_custom_views').directive('changesDirective', [
   '$q',
@@ -61,34 +59,6 @@ angular.module('buildbot_macports_custom_views').directive('changesDirective', [
       var sourcestamps = dataAccessor.getSourcestamps({
         limit: 50,
         order: '-ssid'
-      })
-
-      var props = {
-        $location,
-        builders,
-        builds,
-        buildrequests,
-        workers,
-        buildsets,
-        changes,
-        changesources,
-        sourcestamps
-      }
-
-      Vue.use(Router)
-
-      const router = new Router({
-        routes: [
-          {
-            path: '#/changes',
-            component: ChangesList
-          },
-          {
-            path: '/changes/change/:id',
-            name: 'change',
-            component: Change
-          }
-        ]
       })
 
       var ComponentClass = Vue.extend(ChangesList)

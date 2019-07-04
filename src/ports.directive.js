@@ -61,18 +61,6 @@ angular.module('buildbot_macports_custom_views').directive('portsDirective', [
         order: '-ssid'
       })
 
-      var props = {
-        $location,
-        builders,
-        builds,
-        buildrequests,
-        workers,
-        buildsets,
-        changes,
-        changesources,
-        sourcestamps
-      }
-
       var ComponentClass = Vue.extend(PortsList)
 
       /* cannot pass the changes directly, as the magic of buildbot 

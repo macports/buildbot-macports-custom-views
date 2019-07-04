@@ -63,18 +63,6 @@ angular
           order: '-ssid'
         })
 
-        var props = {
-          $location,
-          builders,
-          builds,
-          buildrequests,
-          workers,
-          buildsets,
-          changes,
-          changesources,
-          sourcestamps
-        }
-
         var ComponentClass = Vue.extend(FilterBuilds)
 
         /* cannot pass the changes directly, as the magic of buildbot 
