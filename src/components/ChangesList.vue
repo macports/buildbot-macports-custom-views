@@ -154,16 +154,8 @@
 
 <script>
 import Vue from 'vue'
-import Router from 'vue-router'
 import Datepicker from 'vuejs-datepicker'
-import VModal from 'vue-js-modal'
 import Change from './Change'
-
-Vue.use(VModal, {
-  dynamic: true,
-  injectModalsContainer: true,
-  dynamicDefaults: { clickToClose: false }
-})
 
 export default {
   name: 'App',
