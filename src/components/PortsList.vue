@@ -70,7 +70,7 @@ export default {
   },
   mounted() {
     axios
-      .get('http://frozen-falls-98471.herokuapp.com/api/v1/ports/25000/page/1/')
+      .get('http://ec2-52-34-234-111.us-west-2.compute.amazonaws.com/api/v1/ports/25000/page/1/')
       .then(response => (this.portsList = response.data))
       .catch(error => {
         console.log(error)
