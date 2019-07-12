@@ -6,18 +6,43 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
 strategy:
   matrix:
-    Python27:
-      python.version: '2.7'
-    Python35:
-      python.version: '3.5'
-    Python36:
+    py36_node_10_linux:
+      imageName: 'ubuntu-latest'
       python.version: '3.6'
-    Python37:
+      node_version: 10.x
+    py36_node_12_linux:
+      imageName: 'ubuntu-latest'
+      python.version: '3.6'
+      node_version: 12.x
+    py37_node_10_linux:
+      imageName: 'ubuntu-latest'
       python.version: '3.7'
+      node_version: 10.x
+    py37_node_12_linux:
+      imageName: 'ubuntu-latest'
+      python.version: '3.7'
+      node_version: 12.x
+    py36_node_10_mac:
+      imageName: 'macos-10.14'
+      python.version: '3.6'
+      node_version: 10.x
+    py36_node_12_mac:
+      imageName: 'macos-10.14'
+      python.version: '3.6'
+      node_version: 12.x
+    py37_node_10_mac:
+      imageName: 'macos-10.14'
+      python.version: '3.7'
+      node_version: 10.x
+    py37_node_12_mac:
+      imageName: 'macos-10.14'
+      python.version: '3.7'
+      node_version: 12.x
+
+pool:
+  vmImage: $(imageName)
 
 steps:
 - task: UsePythonVersion@0
@@ -25,12 +50,24 @@ steps:
     versionSpec: '$(python.version)'
   displayName: 'Use Python $(python.version)'
 
-- script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-  displayName: 'Install dependencies'
+- task: NodeTool@0 
+  inputs:
+    versionSpec: $(node_version)
+  displayName: 'Use node $(node_version)'
+
+- script: python -m pip install --upgrade pip
+  displayName: 'Install pip'
+
+- script: pip install buildbot buildbot-pkg buildbot-worker buildbot-www
+  displayName: 'Install buildbot'
+
+- script: npm install
+  displayName: 'Install npm dependencies'
+
+- script: pip install -e .
+  displayName: 'Install plugin'
 
 - script: |
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: 'pytest'
+    npm run test
+    npm run lint
+  displayName: 'npm tests'
