@@ -68,18 +68,17 @@
             {{ build.state_string }}
           </td>
           <td v-if="build.started_at < rdate">
-            {{ getBuilderDetails(build.builderid)[0] }}
-          </td>
-          <td v-if="build.started_at < rdate">
-            <div v-if="build.properties.portname">
-              {{ build.properties.portname[0] }}
-            </div>
-            <div v-else-if="build.properties.fullportlist">
-              {{ build.properties.fullportlist[0] }}
-            </div>
-            <div v-else-if="build.properties.portlist">
-              {{ build.properties.portlist[0] }}
-            </div>
+            <a
+              :href="'/#/builders/' + build.builderid"
+              target="_blank"
+            >
+              <span
+                :class="setResultBadge(build)"
+                class="badge-status ng-binding"
+              >
+                {{ getBuilderDetails(build.builderid)[0] }}
+              </span>
+            </a>
           </td>
           <td v-if="build.started_at < rdate">
             <a
@@ -123,18 +122,17 @@
             {{ build.state_string }}
           </td>
           <td v-if="build.started_at > rdate">
-            {{ getBuilderDetails(build.builderid)[0] }}
-          </td>
-          <td v-if="build.started_at > rdate">
-            <div v-if="build.properties.portname">
-              {{ build.properties.portname[0] }}
-            </div>
-            <div v-else-if="build.properties.fullportlist">
-              {{ build.properties.fullportlist[0] }}
-            </div>
-            <div v-else-if="build.properties.portlist">
-              {{ build.properties.portlist[0] }}
-            </div>
+            <a
+              :href="'/#/builders/' + build.builderid"
+              target="_blank"
+            >
+              <span
+                :class="setResultBadge(build)"
+                class="badge-status ng-binding"
+              >
+                {{ getBuilderDetails(build.builderid)[0] }}
+              </span>
+            </a>
           </td>
           <td v-if="build.started_at > rdate">
             <a
@@ -170,7 +168,6 @@ export default {
         { name: 'started_at', text: 'Started at' },
         { name: 'status', text: 'Status' },
         { name: 'builder', text: 'Builder' },
-        { name: 'ports', text: 'Port(s) affected' },
         { name: 'worker', text: 'Worker' }
       ],
       searchQ: '',
