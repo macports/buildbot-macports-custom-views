@@ -56,19 +56,19 @@
               v-if="change.when_timestamp < rdate"
               key="comments"
             >
-              {{ change.comments }}
+              {{ change.comments.split('\n')[0] }}
             </td>
             <td
               v-if="change.when_timestamp < rdate"
               key="committer"
             >
-              {{ change.committer }}
+              {{ removeEmail(change.committer) }}
             </td>
             <td
               v-if="change.when_timestamp < rdate"
               key="author"
             >
-              {{ change.author }}
+              {{ removeEmail(change.author) }}
             </td>
             <td
               v-if="change.when_timestamp < rdate"
@@ -102,17 +102,19 @@
               v-if="change.when_timestamp > rdate"
               key="comments"
             >
-              {{ change.comments }}
+              {{ change.comments.split('\n')[0] }}
             </td>
             <td
               v-if="change.when_timestamp > rdate"
               key="committer"
-            />
+            >
+              {{ removeEmail(change.committer) }}
+            </td>
             <td
               v-if="change.when_timestamp > rdate"
               key="author"
             >
-              {{ change.author }}
+              {{ removeEmail(change.author) }}
             </td>
             <td
               v-if="change.when_timestamp > rdate"
@@ -213,6 +215,12 @@ export default {
       return (
         [year, month, day].join('-') + ' ' + [hours, minutes, seconds].join(':')
       )
+    },
+    removeEmail: function(s) {
+      if (s != null) {
+        s = s.substring(0, s.indexOf('<'))
+      }
+      return s
     }
   }
 }

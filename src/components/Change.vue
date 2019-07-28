@@ -15,6 +15,8 @@
       <div class="modal-body">
         <h4>Author:</h4>
         {{ change.author }}
+        <h4>Committer:</h4>
+        {{ change.committer }}
         <h4>Timestamp:</h4>
         {{ dt(change.when_timestamp) }}
         <h4>Comments:</h4>
