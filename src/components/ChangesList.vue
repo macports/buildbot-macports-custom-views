@@ -137,6 +137,7 @@
         @click="
           showChange = false
           location.search({})
+          hide()
         "
       >
         Go Back
@@ -181,6 +182,9 @@ export default {
       this.$data.location.search('id', change.changeid)
       this.selectedChange = change
       this.showChange = true
+      this.$data.scope.$apply()
+    },
+    hide() {
       this.$data.scope.$apply()
     },
     changeDir: function() {
