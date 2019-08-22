@@ -67,25 +67,6 @@ module
 
         $stateProvider.state(state)
       }
-
-      bbSettingsServiceProvider.addSettingsGroup({
-        name: 'BuildbotMacPortsCustomViews',
-        caption: 'MacPorts Custom Views related settings',
-        items: [
-          {
-            type: 'integer',
-            name: 'buildLimit',
-            caption: 'Number of builds to fetch',
-            default_value: 200
-          },
-          {
-            type: 'integer',
-            name: 'changeLimit',
-            caption: 'Number of changes to fetch',
-            default_value: 30
-          }
-        ]
-      })
     }
   ])
   .config([
