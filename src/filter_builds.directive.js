@@ -3,6 +3,35 @@ import FilterBuilds from './components/FilterBuilds.vue'
 
 angular
   .module('buildbot_macports_custom_views')
+  .config([
+    'bbSettingsServiceProvider',
+    bbSettingsServiceProvider => {
+      bbSettingsServiceProvider.addSettingsGroup({
+        name: 'FilterBuilds',
+        caption: 'Filter Builds page related settings',
+        items: [
+          {
+            type: 'integer',
+            name: 'buildLimit',
+            caption: 'Number of builds to fetch',
+            default_value: 200
+          },
+          {
+            type: 'integer',
+            name: 'builderLimit',
+            caption: 'Number of builders to fetch',
+            default_value: 200
+          },
+          {
+            type: 'integer',
+            name: 'changeLimit',
+            caption: 'Number of changes to fetch',
+            default_value: 30
+          }
+        ]
+      })
+    }
+  ])
   .directive('filterBuildsDirective', [
     '$q',
     '$window',
@@ -22,9 +51,7 @@ angular
       $timeout,
       $location
     ) => {
-      const settings = bbSettingsService.getSettingsGroup(
-        'BuildbotMacPortsCustomViews'
-      )
+      const settings = bbSettingsService.getSettingsGroup('FilterBuilds')
 
       function link(scope, element, attrs) {
         /* create an instance of the data accessor */
@@ -32,6 +59,7 @@ angular
         console.log('dataccessor', dataAccessor)
 
         var builders = dataAccessor.getBuilders({
+          limit: settings.builderLimit.value,
           order: '-builderid'
         })
         var builds = dataAccessor.getBuilds({
