@@ -27,7 +27,7 @@ module
       let group
       const groups = []
 
-      for (let i of [
+      const pages = [
         ['Changes', '<changes-directive></changes-directive>', 'changeslist'],
         [
           'Filter Builds',
@@ -35,7 +35,9 @@ module
           'filterbuilds'
         ],
         ['Ports Build History', '<ports-directive></ports-directive>', 'ports']
-      ]) {
+      ]
+
+      for (let i of pages) {
         group = {
           name: i[0],
           template: i[1],
