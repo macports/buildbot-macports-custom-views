@@ -6,6 +6,7 @@ describe('Port', () => {
     const defaultData = Port.data()
     expect(defaultData.info).toBe(null)
     expect(defaultData.myBuilds).toBe(null)
+    expect(defaultData.buildsByBuilder).toBe(null)
     expect(defaultData.loading).toBe(true)
     expect(defaultData.errored).toBe(false)
   })

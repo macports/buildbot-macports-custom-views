@@ -3,7 +3,7 @@
     <section v-if="errored">
       <p>
         We're sorry, we're not able to retrieve this information at the moment,
-        please try back later
+        please try again later
       </p>
     </section>
     <section v-else>
@@ -17,104 +17,61 @@
       <div v-else>
         <h1>
           <a
-            :href="
-              'https://github.com/macports/macports-ports/tree/master/' +
-                info.portdir
-            "
+            :href="'https://ports.macports.org/port/' + portname"
             target="_blank"
           >
-            {{ info.name }}
+            {{ portname }}
           </a>
         </h1>
-        <div class="details">
-          <strong>Version:</strong> {{ info.version }} <br>
-          <strong>Maintainers:</strong>
-          <span
-            v-for="(m, index) in info.maintainers"
-            :key="index"
-          >
-            <a
-              v-if="m.github"
-              :href="'https://github.com/' + m.github"
-              target="_blank"
-            >
-              {{ m.github }}</a>
-            <a
-              v-else
-              :href="'mailto:' + m.name + '@' + m.domain"
-              target="_top"
-            >
-              {{ m.name }}</a><span v-if="index + 1 < info.maintainers.length">, </span>
-          </span>
-          <br>
-          <strong>Categories:</strong>
-          <span
-            v-for="(c, index) in info.categories"
-            :key="index"
-          >
-            <a
-              :href="
-                'https://github.com/macports/macports-ports/tree/master/' + c
-              "
-              target="_blank"
-            >
-              {{ c }}</a><span v-if="index + 1 < info.categories.length">, </span>
-          </span>
-          <br>
-          <h3>Builds for {{ info.name }}</h3>
-          <table class="table table-hover table-striped table-condensed">
-            <tbody>
-              <tr>
-                <th
-                  v-for="(myBuild, index) in getUniqueBuilders(myBuilds)"
-                  :key="index"
-                  style="background-color: #42b983"
+        <table class="table table-hover table-striped table-condensed">
+          <tbody>
+            <tr>
+              <th
+                v-for="(bldr, index) in info"
+                :key="index"
+                style="background-color: #42b983"
+              >
+                {{ bldr.name }}
+              </th>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <td
+                v-for="(mb, index) in buildsByBuilder"
+                :key="index"
+              >
+                <div
+                  v-if="mb"
+                  class="status"
                 >
-                  {{ myBuild.builder_name.name }}
-                </th>
-              </tr>
-            </tbody>
-            <tbody>
-              <tr>
-                <td
-                  v-for="(mb, index) in groups"
-                  :key="index"
-                >
-                  <div
-                    v-if="mb"
-                    class="status"
+                  <tr
+                    v-for="(build, index2) in mb.data.builds"
+                    :key="index2"
                   >
-                    <tr
-                      v-for="(m, index2) in mb"
-                      :key="index2"
+                    <a
+                      :href="
+                        baseURL +
+                          '#/builders/' +
+                          build.builderid +
+                          '/builds/' +
+                          build.number
+                      "
+                      target="_blank"
                     >
-                      <div v-if="m.status === 'build successful'">
-                        <a
-                          href=""
-                          target="_blank"
-                        >
-                          <span class="badge-status ng-binding results_SUCCESS">
-                            {{ m.build_id }}
-                          </span>
-                        </a>
-                      </div>
-                      <div v-else>
-                        <a
-                          href=""
-                          target="_blank"
-                        >
-                          <span class="badge-status ng-binding results_FAILURE">
-                            {{ m.build_id }}
-                          </span>
-                        </a>
-                      </div>
-                    </tr>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                      <span
+                        :class="setResultBadge(build)"
+                        class="badge-status ng-binding "
+                      >
+                        {{ build.builderid }}/{{ build.number }}
+                      </span>
+                    </a>
+                  </tr>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
   </div>
@@ -126,26 +83,19 @@ import _ from 'lodash'
 
 export default {
   name: 'Port',
-  props: { portname: String },
+  props: { portname: String, location: Object },
   data() {
     return {
       info: null,
       myBuilds: null,
+      buildsByBuilder: null,
+      baseURL: window.location.origin,
       loading: true,
       errored: false
     }
   },
-
-  computed: {
-    groups(myBuilds) {
-      return _.groupBy(this.myBuilds, e => {
-        return e.builder_name.name
-      })
-    }
-  },
   watch: {
     portname: function(newVal, oldVal) {
-      this.$props.portname = newVal
       this.init()
     }
   },
@@ -155,41 +105,66 @@ export default {
   methods: {
     init() {
       this.loading = true
+      const portname = this.$props.portname
       axios
         .get(
-          `http://ec2-52-34-234-111.us-west-2.compute.amazonaws.com/api/v1/port/${
-            this.$props.portname
-          }/`
+          `${window.location.origin}/api/v2/builders?name__contains=${this.$props.portname}_`
         )
-        .then(response => (this.info = response.data))
-        .catch(error => {
-          console.log(error)
-          this.errored = true
+        .then(response => {
+          this.info = []
+          for (const testBuilder of response.data.builders) {
+            if (testBuilder.name.substring(0, portname.length) == portname) {
+              this.info.push(testBuilder)
+            }
+          }
         })
-      axios
-        .get(
-          `http://ec2-52-34-234-111.us-west-2.compute.amazonaws.com/api/v1/port/${
-            this.$props.portname
-          }/builds`
-        )
-        .then(response => (this.myBuilds = response.data))
+        .then(() => {
+          let promises = [],
+            myUrl,
+            buildsByBuilder
+          this.info.forEach(function(builder) {
+            myUrl = `${window.location.origin}/api/v2/builders/${builder.name}/builds`
+            promises.push(axios.get(myUrl))
+          })
+          axios.all(promises).then(results => {
+            this.buildsByBuilder = results
+          })
+        })
         .catch(error => {
           console.log(error)
           this.errored = true
         })
         .finally(() => (this.loading = false))
     },
-    getUniqueBuilders(myBuilds) {
-      var flags = [],
-        output = [],
-        l = myBuilds.length,
-        i
-      for (i = 0; i < l; i++) {
-        if (flags[myBuilds[i].builder_name.name]) continue
-        flags[myBuilds[i].builder_name.name] = true
-        output.push(myBuilds[i])
+    setResultBadge: function(b) {
+      let result
+      if (!b.complete && b.started_at >= 0) {
+        result = 'PENDING'
+      } else {
+        switch (b.results) {
+          case 0:
+            result = 'SUCCESS'
+            break
+          case 1:
+            result = 'WARNINGS'
+            break
+          case 2:
+            result = 'FAILURE'
+            break
+          case 3:
+            result = 'SKIPPED'
+            break
+          case 4:
+            result = 'EXCEPTION'
+            break
+          case 5:
+            result = 'CANCELLED'
+            break
+          default:
+            result = 'unknown'
+        }
       }
-      return output
+      return 'results_' + result
     }
   }
 }

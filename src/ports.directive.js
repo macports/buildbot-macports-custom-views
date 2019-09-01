@@ -21,6 +21,12 @@ angular
             name: 'builderLimit',
             caption: 'Number of builders to fetch',
             default_value: 20000
+          },
+          {
+            type: 'integer',
+            name: 'pageSize',
+            caption: 'Number of ports to display on one page',
+            default_value: 100
           }
         ]
       })
@@ -65,6 +71,8 @@ angular
           order: '-workerid'
         })
 
+        const pageSize = settings.pageSize.value
+
         var ComponentClass = Vue.extend(PortsList)
 
         /* cannot pass the changes directly, as the magic of buildbot 
@@ -73,7 +81,8 @@ angular
           location: $location,
           builders: [],
           builds: [],
-          workers: []
+          workers: [],
+          pageSize: pageSize
         }
 
         var e = new ComponentClass({

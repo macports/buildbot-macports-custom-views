@@ -60,7 +60,8 @@
     "vue-class-component": "^7.1.0",
     "vue-loader": "^15.7.0",
     "vue-template-compiler": "^2.6.10",
-    "vuejs-datepicker": "^1.5.4"
+    "vuejs-datepicker": "^1.5.4",
+    "vuejs-uib-pagination": "^1.0.6"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.4.5",

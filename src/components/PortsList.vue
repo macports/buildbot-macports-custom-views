@@ -1,51 +1,70 @@
 <template>
   <div id="root">
-    <section v-if="errored">
-      <p>
-        We're sorry, we're not able to retrieve this information at the moment,
-        please try back later
-      </p>
-    </section>
-    <section v-else>
-      <div
-        v-if="loading"
-        class="load-indicator spinner loading"
+    <div v-if="showPort || location.$$url !== '/ports'">
+      <Port
+        :portname="location.search()['id']"
+        :location="location"
+      />
+    </div>
+    <uib-pagination
+      v-model="pagination"
+      class="pagination-sm"
+      :items-per-page="pageSize"
+      :total-items="filteredBuilders.length"
+    />
+    <form
+      role="search"
+      style="width:150px"
+    >
+      <input
+        v-model="search"
+        type="text"
+        class="form-control"
+        placeholder="Search for ports"
       >
-        <i class="fa fa-circle-o-notch fa-spin fa-2x spin" />
-        <span class="msg">Crunching latest data...</span>
-      </div>
-      <div v-else>
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Search for port"
-        >
-        <br>
-        <div v-if="showPort || location.$$url !== '/ports'">
-          <Port :portname="location.search()['id']" />
-        </div>
-        <br>
-        <div
-          v-for="(port, index) in filteredPorts"
+    </form>
+    <br>
+    <table
+      style="width:200px"
+      class="table table-hover table-striped table-condensed"
+    >
+      <tbody id="htb">
+        <tr>
+          <th>Port</th>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr
+          v-for="(buildername, index) in filteredBuilders.slice(
+            pageSize * (pagination.currentPage - 1),
+            pageSize * (pagination.currentPage - 1) + pageSize
+          )"
           :key="index"
-          class="btn-group-vertical group"
         >
-          <button
-            type="button"
-            class="btn btn-default"
-            @click="setId(port.name)"
-          >
-            {{ port.name }}
-          </button>
-          <br>
-        </div>
-      </div>
-    </section>
+          <td>
+            <a
+              role="button"
+              @click="setId(buildername)"
+            >
+              {{ buildername }}
+            </a>
+            <br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
+
 <script>
-import axios from 'axios'
 import Port from './Port.vue'
+
+import _ from 'lodash'
+import axios from 'axios'
+import Vue from 'vue'
+import pagination from 'vuejs-uib-pagination'
+
+Vue.use(pagination)
 
 export default {
   name: 'PortsList',
@@ -58,25 +77,43 @@ export default {
       portsList: null,
       loading: true,
       errored: false,
-      showPort: false
+      showPort: false,
+      pagination: {}
     }
   },
   computed: {
-    filteredPorts() {
-      return this.portsList.filter(port => {
-        return port.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1
-      })
+    filteredBuilders() {
+      return [
+        ...new Set(
+          this.builders
+            .filter(builder => {
+              if (builder.tags.includes('_virtual_')) {
+                if (builder.name.includes('_')) {
+                  return (
+                    builder.name
+                      .slice(0, builder.name.indexOf('_'))
+                      .toLowerCase()
+                      .indexOf(this.search.toLowerCase()) > -1
+                  )
+                } else {
+                  return (
+                    builder.name
+                      .toLowerCase()
+                      .indexOf(this.search.toLowerCase()) > -1
+                  )
+                }
+              }
+            })
+            .map(builder => {
+              if (builder.name.includes('_')) {
+                return builder.name.slice(0, builder.name.indexOf('_'))
+              } else {
+                return builder.name
+              }
+            })
+        )
+      ].sort()
     }
-  },
-  mounted() {
-    axios
-      .get('http://ec2-52-34-234-111.us-west-2.compute.amazonaws.com/api/v1/ports/25000/page/1/')
-      .then(response => (this.portsList = response.data))
-      .catch(error => {
-        console.log(error)
-        this.errored = true
-      })
-      .finally(() => (this.loading = false))
   },
   methods: {
     setId(portname) {
@@ -86,11 +123,29 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 #root {
   margin: 8px;
 }
 .group {
   margin: 0px 1px;
+}
+table {
+  border: 2px solid #42b983;
+  border-radius: 3px;
+  background-color: #fff;
+}
+th {
+  background-color: #42b983;
+  color: rgba(255, 255, 255);
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+#htb > tr > th {
+  background-color: #42b983;
 }
 </style>
