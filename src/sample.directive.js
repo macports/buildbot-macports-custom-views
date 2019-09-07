@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import SampleVueComponent from './components/SampleVueComponent.vue'
 
+import axios from 'axios'
+
 angular
   .module('buildbot_macports_custom_views')
   .config([
@@ -10,30 +12,6 @@ angular
         name: 'SampleVueComponent',
         caption: 'SampleVueComponent page related settings',
         items: [
-          {
-            type: 'integer',
-            name: 'buildLimit',
-            caption: 'Number of builds to fetch',
-            default_value: 50
-          },
-          {
-            type: 'integer',
-            name: 'builderLimit',
-            caption: 'Number of builders to fetch',
-            default_value: 50
-          },
-          {
-            type: 'integer',
-            name: 'buildsetLimit',
-            caption: 'Number of buildsets to fetch',
-            default_value: 50
-          },
-          {
-            type: 'integer',
-            name: 'buildrequestLimit',
-            caption: 'Number of buildrequests to fetch',
-            default_value: 50
-          },
           {
             type: 'integer',
             name: 'changeLimit',
@@ -66,86 +44,44 @@ angular
       const settings = bbSettingsService.getSettingsGroup('SampleVueComponent')
 
       function link(scope, element, attrs) {
-        /* create an instance of the data accessor */
-        var dataAccessor = dataService.open().closeOnDestroy(scope)
-        console.log('dataccessor', dataAccessor)
+        // create an instance of the data accessor
+        const dataAccessor = dataService.open().closeOnDestroy(scope)
 
-        var builders = dataAccessor.getBuilders({
-          limit: settings.builderLimit.value,
-          order: '-builderid'
-        })
-        var builds = dataAccessor.getBuilds({
-          limit: settings.buildLimit.value,
-          order: '-started_at',
-          property: '*'
-        })
-        var buildrequests = dataAccessor.getBuildrequests({
-          limit: settings.buildrequestLimit.value,
-          order: '-submitted_at'
-        })
-        var workers = dataAccessor.getWorkers({
-          order: '-workerid'
-        })
-        var buildsets = dataAccessor.getBuildsets({
-          limit: settings.buildsetLimit.value,
-          order: '-submitted_at'
-        })
-        var changes = dataAccessor.getChanges({
+        const changes = dataAccessor.getChanges({
           limit: settings.changeLimit.value,
           order: '-changeid'
         })
-        var changesources = dataAccessor.getChangesources({
-          order: '-changesourceid'
-        })
-        var sourcestamps = dataAccessor.getSourcestamps({
-          order: '-ssid'
-        })
 
-        var ComponentClass = Vue.extend(SampleVueComponent)
+        const ComponentClass = Vue.extend(SampleVueComponent)
 
-        /* cannot pass the changes directly, as the magic of buildbot 
-            data module clashes with the magic of vue observers */
-        var data = {
-          location: $location,
-          builders: [],
-          builds: [],
-          buildrequests: [],
-          workers: [],
-          buildsets: [],
-          changes: [],
-          changesources: [],
-          sourcestamps: []
+        /**
+         * TODO: Make data module compatible with Vue, so that collections
+         * can be directly passed to Vue SFC. Right now we are creating new arrays
+         * for different properties (builds, builders, etc), and appending items
+         * to them and passing it as data to the component.
+         */
+        let changesArray = []
+
+        changes.onNew = change => {
+          axios
+            .get(`${window.location.origin}/api/v2/changes/${change.changeid}`)
+            .then(response => {
+              changesArray.push(response.data.changes[0])
+            })
+          data.changes = changesArray
         }
 
-        var e = new ComponentClass({
+        let data = {
+          location: $location,
+          changes: []
+        }
+
+        new ComponentClass({
           data: data,
           el: element.get(0)
         })
 
-        function update() {
-          data.scope = scope
-          data.location = $location
-          data.builders = builders.slice()
-          data.builds = builds.slice()
-          data.buildrequests = buildrequests.slice()
-          data.workers = workers.slice()
-          data.buildsets = buildsets.slice()
-          data.changes = changes.slice()
-          data.changesources = changesources.slice()
-          data.sourcestamps = sourcestamps.slice()
-          scope.$digest()
-        }
-
-        scope.onChange = () => update()
-        $location.onChange = () => update()
-        builders.onChange = () => update()
-        builds.onChange = () => update()
-        buildrequests.onChange = () => update()
-        workers.onChange = () => update()
-        buildsets.onChange = () => update()
-        changes.onChange = () => update()
-        changesources.onChange = () => update()
-        sourcestamps.onChange = () => update()
+        data.scope = scope
       }
 
       return {
