@@ -7,8 +7,6 @@ describe('ChangesList', () => {
     expect(defaultData.showChange).toBe(false)
     expect(defaultData.selectedChange).toEqual({})
     expect(defaultData.buttonTxt).toBe('Show changes after this date')
-    expect(defaultData.before).toBe(true)
-    expect(typeof defaultData.rdate).toBe('number')
     expect(defaultData.loading).toBe(true)
     expect(defaultData.errored).toBe(false)
   })
