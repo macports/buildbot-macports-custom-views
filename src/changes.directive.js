@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import ChangesList from './components/ChangesList.vue'
 
+import axios from 'axios'
+
 angular
   .module('buildbot_macports_custom_views')
   .config([
@@ -66,46 +68,119 @@ angular
       const settings = bbSettingsService.getSettingsGroup('ChangesList')
 
       function link(scope, element, attrs) {
-        /* create an instance of the data accessor */
-        var dataAccessor = dataService.open().closeOnDestroy(scope)
-        console.log('dataccessor', dataAccessor)
+        // create an instance of the data accessor
+        const dataAccessor = dataService.open().closeOnDestroy(scope)
 
-        var builders = dataAccessor.getBuilders({
+        const builders = dataAccessor.getBuilders({
           limit: settings.builderLimit.value,
           order: '-builderid'
         })
-        var builds = dataAccessor.getBuilds({
+        const builds = dataAccessor.getBuilds({
           limit: settings.buildLimit.value,
           order: '-started_at',
           property: '*'
         })
-        var buildrequests = dataAccessor.getBuildrequests({
+        const buildrequests = dataAccessor.getBuildrequests({
           limit: settings.buildrequestLimit.value,
           order: '-submitted_at'
         })
-        var workers = dataAccessor.getWorkers({
+        const workers = dataAccessor.getWorkers({
           order: '-workerid'
         })
-        var buildsets = dataAccessor.getBuildsets({
+        const buildsets = dataAccessor.getBuildsets({
           limit: settings.buildsetLimit.value,
           order: '-submitted_at'
         })
-        var changes = dataAccessor.getChanges({
+        const changes = dataAccessor.getChanges({
           limit: settings.changeLimit.value,
           order: '-changeid'
         })
-        var changesources = dataAccessor.getChangesources({
+        const changesources = dataAccessor.getChangesources({
           order: '-changesourceid'
         })
-        var sourcestamps = dataAccessor.getSourcestamps({
-          order: '-ssid'
-        })
 
-        var ComponentClass = Vue.extend(ChangesList)
+        const ComponentClass = Vue.extend(ChangesList)
 
-        /* cannot pass the changes directly, as the magic of buildbot 
-            data module clashes with the magic of vue observers */
-        var data = {
+        /**
+         * TODO: Make data module compatible with Vue, so that collections
+         * can be directly passed to Vue SFC. Right now we are creating new arrays
+         * for different properties (builds, builders, etc), and appending items
+         * to them and passing it as data to the component.
+         */
+        let buildsArray = [],
+          buildersArray = [],
+          workersArray = [],
+          changesArray = [],
+          buildrequestsArray = [],
+          buildsetsArray = [],
+          changesourcesArray = []
+
+        builds.onNew = build => {
+          axios
+            .get(
+              `${window.location.origin}/api/v2/builds/${build.buildid}?property=*`
+            )
+            .then(response => {
+              buildsArray.push(response.data.builds[0])
+            })
+          data.builds = buildsArray
+        }
+        builders.onNew = builder => {
+          axios
+            .get(
+              `${window.location.origin}/api/v2/builders/${builder.builderid}`
+            )
+            .then(response => {
+              buildersArray.push(response.data.builders[0])
+            })
+          data.builders = buildersArray
+        }
+        workers.onNew = worker => {
+          axios
+            .get(`${window.location.origin}/api/v2/workers/${worker.workerid}`)
+            .then(response => {
+              workersArray.push(response.data.workers[0])
+            })
+          data.workers = workersArray
+        }
+        changes.onNew = change => {
+          axios
+            .get(`${window.location.origin}/api/v2/changes/${change.changeid}`)
+            .then(response => {
+              changesArray.push(response.data.changes[0])
+            })
+          if (data.before) {
+            data.rdate = new Date().getTime() / 1000
+          }
+          data.changes = changesArray
+        }
+        buildrequests.onNew = buildrequest => {
+          axios
+            .get(
+              `${window.location.origin}/api/v2/buildrequests/${buildrequest.buildrequestid}`
+            )
+            .then(response => {
+              buildrequestsArray.push(response.data.buildrequests[0])
+            })
+        }
+        buildsets.onNew = buildset => {
+          axios
+            .get(`${window.location.origin}/api/v2/buildsets/${buildset.bsid}`)
+            .then(response => {
+              buildsetsArray.push(response.data.buildsets[0])
+            })
+        }
+        changesources.onNew = changesource => {
+          axios
+            .get(
+              `${window.location.origin}/api/v2/changesources/${changesource.changesourceid}`
+            )
+            .then(response => {
+              changesourcesArray.push(response.data.changesources[0])
+            })
+        }
+
+        let data = {
           location: $location,
           builders: [],
           builds: [],
@@ -114,38 +189,16 @@ angular
           buildsets: [],
           changes: [],
           changesources: [],
-          sourcestamps: []
+          before: true,
+          rdate: new Date().getTime() / 1000
         }
 
-        var e = new ComponentClass({
+        new ComponentClass({
           data: data,
           el: element.get(0)
         })
 
-        function update() {
-          data.scope = scope
-          data.location = $location
-          data.builders = builders.slice()
-          data.builds = builds.slice()
-          data.buildrequests = buildrequests.slice()
-          data.workers = workers.slice()
-          data.buildsets = buildsets.slice()
-          data.changes = changes.slice()
-          data.changesources = changesources.slice()
-          data.sourcestamps = sourcestamps.slice()
-          scope.$digest()
-        }
-
-        scope.onChange = () => update()
-        $location.onChange = () => update()
-        builders.onChange = () => update()
-        builds.onChange = () => update()
-        buildrequests.onChange = () => update()
-        workers.onChange = () => update()
-        buildsets.onChange = () => update()
-        changes.onChange = () => update()
-        changesources.onChange = () => update()
-        sourcestamps.onChange = () => update()
+        data.scope = scope
       }
 
       return {

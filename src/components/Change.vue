@@ -77,7 +77,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$props)
     if ('changeid' in this.$props.change) {
       this.loading = false
     } else {

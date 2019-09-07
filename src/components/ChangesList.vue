@@ -171,8 +171,6 @@ export default {
       showChange: false,
       selectedChange: {},
       buttonTxt: 'Show changes after this date',
-      before: true,
-      rdate: new Date().getTime() / 1000,
       loading: true,
       errored: false
     }
@@ -197,9 +195,7 @@ export default {
       }
     },
     doStuff: function(date) {
-      console.log('original ' + this.$data.rdate)
       this.$data.rdate = date.getTime() / 1000
-      console.log('final ' + this.$data.rdate)
     },
     formatDate: function(timestamp) {
       var d = new Date(timestamp * 1000)
