@@ -15,19 +15,23 @@
         {{ buttonTxt }}
       </button>
     </div>
-    <form id="search">
+    <form
+      role="search"
+      style="width:150px"
+    >
       <input
-        v-model="searchQ"
-        name="query"
+        v-model="search"
+        type="text"
+        class="form-control"
         placeholder="Filter by port"
       >
     </form>
     <h2 v-if="before">
-      Showing all builds before
+      Showing builds before
       {{ formatDate(rdate) }}
     </h2>
     <h2 v-else>
-      Showing all builds after
+      Showing builds after
       {{ formatDate(rdate) }}
     </h2>
     <table class="table table-hover table-striped table-condensed">
@@ -157,7 +161,7 @@
 import Datepicker from 'vuejs-datepicker'
 
 export default {
-  name: 'App',
+  name: 'FilterBuilds',
   components: {
     Datepicker
   },
@@ -170,15 +174,13 @@ export default {
         { name: 'builder', text: 'Builder' },
         { name: 'worker', text: 'Worker' }
       ],
-      searchQ: '',
-      buttonTxt: 'Show builds after this date',
-      before: true,
-      rdate: new Date().getTime() / 1000
+      search: '',
+      buttonTxt: 'Show builds after this date'
     }
   },
   computed: {
     filteredBuilds: function() {
-      var filterKey = this.searchQ && this.searchQ.toLowerCase()
+      var filterKey = this.search && this.search.toLowerCase()
       var fBuilds = this.builds
       if (filterKey) {
         fBuilds = fBuilds.filter(function(row) {
@@ -274,9 +276,7 @@ export default {
       }
     },
     doStuff: function(date) {
-      console.log('original ' + this.$data.rdate)
       this.$data.rdate = date.getTime() / 1000
-      console.log('final ' + this.$data.rdate)
     },
     formatDate: function(timestamp) {
       var d = new Date(timestamp * 1000)
