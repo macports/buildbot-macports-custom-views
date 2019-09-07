@@ -1,6 +1,6 @@
 {
   "name": "buildbot-macports-custom-views",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "MacPorts Custom Views Plugin for Buildbot",
   "main": "index.js",
   "scripts": {
