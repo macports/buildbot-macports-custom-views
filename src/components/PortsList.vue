@@ -60,7 +60,6 @@
 import Port from './Port.vue'
 
 import _ from 'lodash'
-import axios from 'axios'
 import Vue from 'vue'
 import pagination from 'vuejs-uib-pagination'
 

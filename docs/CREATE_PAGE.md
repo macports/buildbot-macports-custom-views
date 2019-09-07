@@ -9,11 +9,11 @@ Now open [src/main.module.js](../src/main.module.js).
 In the last line, import the sample directive as follows:
 `require('./sample.directive.js')`
 
-In the [pages variable](../src/main.module.js#L30), you will need to add information about the directive which you are adding. By default (for MacPorts use case there are three arrays inside pages).
+In the [pages variable](../src/main.module.js#L25), you will need to add information about the directive which you are adding. By default (for MacPorts use case there are three arrays inside pages).
 
 Suppose you want to name the page `My Sample Component` (this is displayed on the navigation bar), with the route as `#/sample`.
 
-Note that in [src/sample.directive.js#L47](../src/sample.directive.js#L47), the directive has been named in lower camelCase as `sampleDirective` (this is how it should be named).
+Note that in [src/sample.directive.js#L25](../src/sample.directive.js#L25), the directive has been named in lower camelCase as `sampleDirective` (this is how it should be named).
 
 So, in the `pages` variable, you need to append this array:
 

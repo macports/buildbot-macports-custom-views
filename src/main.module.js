@@ -1,6 +1,4 @@
-console.log('Hello from the buildbot-macports-custom-views!')
-
-var module = angular.module('buildbot_macports_custom_views', [
+const module = angular.module('buildbot_macports_custom_views', [
   'ui.router',
   'ui.bootstrap',
   'ui.bootstrap.popover',
@@ -21,9 +19,6 @@ module
       bbSettingsServiceProvider,
       config
     ) => {
-      // Config object coming in from the master.cfg
-      // console.log('config', config)
-
       let group
       const groups = []
 
