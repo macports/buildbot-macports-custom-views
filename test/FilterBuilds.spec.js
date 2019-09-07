@@ -5,7 +5,5 @@ describe('FilterBuilds', () => {
     expect(typeof FilterBuilds.data).toBe('function')
     const defaultData = FilterBuilds.data()
     expect(defaultData.buttonTxt).toBe('Show builds after this date')
-    expect(defaultData.before).toBe(true)
-    expect(typeof defaultData.rdate).toBe('number')
   })
 })
