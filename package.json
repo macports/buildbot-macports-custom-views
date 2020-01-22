@@ -56,10 +56,10 @@
     "autolinker": "^3.11.1",
     "axios": "^0.19.0",
     "lodash": "^4.17.15",
-    "vue": "^2.6.10",
+    "vue": "^2.6.11",
     "vue-class-component": "^7.2.2",
     "vue-loader": "^15.8.3",
-    "vue-template-compiler": "^2.6.10",
+    "vue-template-compiler": "^2.6.11",
     "vuejs-datepicker": "^1.5.4",
     "vuejs-uib-pagination": "^1.0.6"
   },
