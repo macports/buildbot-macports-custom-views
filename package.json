@@ -58,7 +58,7 @@
     "lodash": "^4.17.15",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
-    "vue-loader": "^15.7.1",
+    "vue-loader": "^15.8.3",
     "vue-template-compiler": "^2.6.10",
     "vuejs-datepicker": "^1.5.4",
     "vuejs-uib-pagination": "^1.0.6"
