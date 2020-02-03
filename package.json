@@ -50,7 +50,7 @@
   "homepage": "https://github.com/macports/buildbot-macports-custom-views#readme",
   "dependencies": {
     "@babel/core": "^7.4.5",
-    "@hapi/cryptiles": "^4.2.0",
+    "@hapi/cryptiles": "^5.0.0",
     "@hapi/hoek": "^9.0.2",
     "ajv": "^6.11.0",
     "autolinker": "^3.11.1",
