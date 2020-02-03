@@ -77,7 +77,7 @@
     "eslint-plugin-vue": "^5.2.2",
     "expect": "^25.1.0",
     "file-loader": "^4.0.0",
-    "jest": "^24.8.0",
+    "jest": "^24.9.0",
     "jsdom": "^15.1.1",
     "jsdom-global": "^3.0.2",
     "json2ts": "0.0.7",
