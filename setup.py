@@ -20,7 +20,7 @@ setup_www_plugin(
     description='MacPorts Custom Views Plugin for Buildbot',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    version='0.1.1',
+    version='0.1.2',
     author=u'Rajdeep Bharati',
     author_email=u'rajdeepbharati13@gmail.com',
     url='https://github.com/macports/buildbot-macports-custom-views',
