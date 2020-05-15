@@ -175,6 +175,14 @@ export default {
       errored: false
     }
   },
+  mounted() {
+    self = this
+    window.onpopstate = () => {
+      self.showChange = false
+      self.$data.scope.$apply()
+    }
+    history.pushState({}, '')
+  },
   methods: {
     show(change) {
       this.$data.location.search('id', change.changeid)
