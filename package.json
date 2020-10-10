@@ -52,7 +52,7 @@
     "@babel/core": "^7.8.4",
     "@hapi/cryptiles": "^5.0.0",
     "@hapi/hoek": "^9.0.4",
-    "ajv": "^6.11.0",
+    "ajv": "^6.12.6",
     "autolinker": "^3.13.0",
     "axios": "^0.19.2",
     "lodash": "^4.17.15",
