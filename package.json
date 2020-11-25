@@ -49,7 +49,7 @@
   },
   "homepage": "https://github.com/macports/buildbot-macports-custom-views#readme",
   "dependencies": {
-    "@babel/core": "^7.8.4",
+    "@babel/core": "^7.12.9",
     "@hapi/cryptiles": "^5.0.0",
     "@hapi/hoek": "^9.0.4",
     "ajv": "^6.11.0",
