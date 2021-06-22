@@ -64,7 +64,7 @@
     "vuejs-uib-pagination": "^1.0.6"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-env": "^7.14.7",
     "@vue/test-utils": "^1.0.0-beta.31",
     "awesome-typescript-loader": "^5.2.1",
     "babel-eslint": "^10.0.3",
